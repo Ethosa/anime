@@ -10,4 +10,6 @@
 
 ## Now supported
 -   Sync/Async.
--   Search, get limit info.
+-   Search.
+-   Get limit info.
+-   Image/video preview.
