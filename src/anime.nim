@@ -2,10 +2,10 @@
 import httpclient
 import asyncdispatch
 from base64 import encode
+from uri import encodeUrl
+from streams import newFileStream, readAll
 import json
 export json
-import uri
-import streams
 
 
 const
@@ -88,7 +88,7 @@ proc video_preview_url*(t: ATraceMoeRef, response: JsonNode,
   result = await t.image_preview_url(response, index, "preview.php")
 
 
-proc video_preview_natural*(t: TraceMoeObj, response: JsonNode,
+proc video_preview_natural*(t: TraceMoeRef, response: JsonNode,
                             index=0): string =
   ## Gets natural video preview.
   ##
@@ -98,7 +98,7 @@ proc video_preview_natural*(t: TraceMoeObj, response: JsonNode,
   result &= r["filename"].getStr & "?t=" & $r["at"]
   result &= "&token=" & r["tokenthumb"].getStr
 
-proc video_preview_natural*(t: TraceMoeObj, response: JsonNode,
+proc video_preview_natural*(t: ATraceMoeRef, response: JsonNode,
                             index=0): Future[string] {.async.} =
   ## Gets natural video preview.
   ##
