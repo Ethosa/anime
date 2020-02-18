@@ -16,43 +16,43 @@ const
 
 
 type
-  TraceMoeObj[HType] = ref object
+  TraceObj[HType] = object
     access_token: string
     client*: HType
 
-  TraceMoeRef* = TraceMoeObj[HttpClient]
-  ATraceMoeRef* = TraceMoeObj[AsyncHttpClient]
+  TraceMoeObj* = TraceObj[HttpClient]
+  ATraceMoeObj* = TraceObj[AsyncHttpClient]
 
 
-proc TraceMoe*(access_token=""): TraceMoeRef =
-  ## Creates a new TraceMoeRef object.
+proc TraceMoe*(access_token=""): TraceMoeObj =
+  ## Creates a new TraceMoeObj object.
   ##
   ## Arguments:
   ## -   ``access_token`` -- access token, if available.
-  TraceMoeRef(access_token: access_token, client: newHttpClient())
+  TraceMoeObj(access_token: access_token, client: newHttpClient())
 
-proc ATraceMoe*(access_token=""): ATraceMoeRef =
-  ## Creates a new ATraceMoeRef object.
+proc ATraceMoe*(access_token=""): ATraceMoeObj =
+  ## Creates a new ATraceMoeObj object.
   ##
   ## Arguments:
   ## -   ``access_token`` -- access token, if available.
-  ATraceMoeRef(access_token: access_token, client: newAsyncHttpClient())
+  ATraceMoeObj(access_token: access_token, client: newAsyncHttpClient())
 
 
-proc me*(t: ATraceMoeRef): Future[JsonNode] {. async .} =
+proc me*(t: ATraceMoeObj): Future[JsonNode] {. async .} =
   ## Gets limit info
   var url = ME_URL
   url &= "?token=" & t.access_token
   result = parseJson await t.client.getContent(url)
 
-proc me*(t: TraceMoeRef): JsonNode =
+proc me*(t: TraceMoeObj): JsonNode =
   ## Gets limit info
   var url = ME_URL
   url &= "?token=" & t.access_token
   result = parseJson t.client.getContent(url)
 
 
-proc image_preview_url*(t: TraceMoeRef, response: JsonNode,
+proc image_preview_url*(t: TraceMoeObj, response: JsonNode,
                         index=0, page="thumbnail.php"): string =
   ## Gets an image preview URL.
   ##
@@ -62,7 +62,7 @@ proc image_preview_url*(t: TraceMoeRef, response: JsonNode,
   result &= "&file=" & r["filename"].getStr
   result &= "&t=" & $r["at"] & "&token=" & r["tokenthumb"].getStr
 
-proc image_preview_url*(t: ATraceMoeRef, response: JsonNode,
+proc image_preview_url*(t: ATraceMoeObj, response: JsonNode,
                         index=0, page="thumbnail.php"): Future[string] {.async.} =
   ## Gets an image preview URL.
   ##
@@ -73,14 +73,14 @@ proc image_preview_url*(t: ATraceMoeRef, response: JsonNode,
   result &= "&t=" & $r["at"] & "&token=" & r["tokenthumb"].getStr
 
 
-proc video_preview_url*(t: TraceMoeRef, response: JsonNode,
+proc video_preview_url*(t: TraceMoeObj, response: JsonNode,
                         index=0): string =
   ## gets a video preview URL.
   ##
   ## Using this URL you can download video preview in the file.
   result = t.image_preview_url(response, index, "preview.php")
 
-proc video_preview_url*(t: ATraceMoeRef, response: JsonNode,
+proc video_preview_url*(t: ATraceMoeObj, response: JsonNode,
                         index=0): Future[string] {.async.} =
   ## gets a video preview URL.
   ##
@@ -88,7 +88,7 @@ proc video_preview_url*(t: ATraceMoeRef, response: JsonNode,
   result = await t.image_preview_url(response, index, "preview.php")
 
 
-proc video_preview_natural*(t: TraceMoeRef, response: JsonNode,
+proc video_preview_natural*(t: TraceMoeObj, response: JsonNode,
                             index=0): string =
   ## Gets natural video preview.
   ##
@@ -98,7 +98,7 @@ proc video_preview_natural*(t: TraceMoeRef, response: JsonNode,
   result &= r["filename"].getStr & "?t=" & $r["at"]
   result &= "&token=" & r["tokenthumb"].getStr
 
-proc video_preview_natural*(t: ATraceMoeRef, response: JsonNode,
+proc video_preview_natural*(t: ATraceMoeObj, response: JsonNode,
                             index=0): Future[string] {.async.} =
   ## Gets natural video preview.
   ##
@@ -109,7 +109,7 @@ proc video_preview_natural*(t: ATraceMoeRef, response: JsonNode,
   result &= "&token=" & r["tokenthumb"].getStr
 
 
-proc search*(t: ATraceMoeRef, file: string,
+proc search*(t: ATraceMoeObj, file: string,
              search_filter=0, is_url=false): Future[JsonNode] {.async.} =
   ## Searchs anime by image or image URL.
   ##
@@ -131,7 +131,7 @@ proc search*(t: ATraceMoeRef, file: string,
     mpdata["search_filter"] = $search_filter
     result = parseJson await t.client.postContent(url, multipart=mpdata)
 
-proc search*(t: TraceMoeRef, file: string,
+proc search*(t: TraceMoeObj, file: string,
              search_filter=0, is_url=false): JsonNode =
   ## Searchs anime by image or image URL.
   ##

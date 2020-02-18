@@ -1,7 +1,7 @@
 [Package]
 name = "anime"
 author = "Ethosa"
-version = "0.5"
+version = "0.6"
 description = "The Nim wrapper for tracemoe."
 license = "AGPLv3"
 srcDir = "src"
