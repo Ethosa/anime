@@ -52,8 +52,29 @@ proc me*(t: TraceMoeRef): JsonNode =
   result = parseJson t.client.getContent(url)
 
 
+proc image_preview_url*(t: TraceMoeRef, response: JsonNode,
+                        index=0, page="thumbnail.php"): string =
+  ## Gets an image preview URL.
+  ##
+  ## Using this URL you can download image preview in the file.
+  var r = response["docs"][index]
+  result = MAIN_URL & page & "?anilist_id=" & $r["anilist_id"]
+  result &= "&file=" & r["filename"].getStr
+  result &= "&t=" & $r["at"] & "&token=" & r["tokenthumb"].getStr
+
+proc image_preview_url*(t: ATraceMoeRef, response: JsonNode,
+                        index=0, page="thumbnail.php"): Future[string] {.async.} =
+  ## Gets an image preview URL.
+  ##
+  ## Using this URL you can download image preview in the file.
+  var r = response["docs"][index]
+  result = MAIN_URL & page & "?anilist_id=" & $r["anilist_id"]
+  result &= "&file=" & r["filename"].getStr
+  result &= "&t=" & $r["at"] & "&token=" & r["tokenthumb"].getStr
+
+
 proc search*(t: ATraceMoeRef, file: string,
-             search_filter=0, is_url=false): JsonNode =
+             search_filter=0, is_url=false): Future[JsonNode] {.async.} =
   ## Searchs anime by image or image URL.
   ##
   ## Arguments:
