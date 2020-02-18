@@ -98,6 +98,16 @@ proc video_preview_natural*(t: TraceMoeObj, response: JsonNode,
   result &= r["filename"].getStr & "?t=" & $r["at"]
   result &= "&token=" & r["tokenthumb"].getStr
 
+proc video_preview_natural*(t: TraceMoeObj, response: JsonNode,
+                            index=0): Future[string] {.async.} =
+  ## Gets natural video preview.
+  ##
+  ## Using this URL you can download natural video preview in the file.
+  var r = response["docs"][index]
+  result = MEDIA_URL & "video/" & $r["anilist_id"] & "/"
+  result &= r["filename"].getStr & "?t=" & $r["at"]
+  result &= "&token=" & r["tokenthumb"].getStr
+
 
 proc search*(t: ATraceMoeRef, file: string,
              search_filter=0, is_url=false): Future[JsonNode] {.async.} =
