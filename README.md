@@ -5,7 +5,7 @@
 </div>
 
 ## Getted starting
-***Install***: `nimble install https://github.com/Ethosa/anime`
+***Install***: `nimble install https://github.com/Ethosa/anime`  
 ***Import***: `import anime`
 
 ## Now supported
