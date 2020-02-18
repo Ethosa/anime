@@ -73,6 +73,32 @@ proc image_preview_url*(t: ATraceMoeRef, response: JsonNode,
   result &= "&t=" & $r["at"] & "&token=" & r["tokenthumb"].getStr
 
 
+proc video_preview_url*(t: TraceMoeRef, response: JsonNode,
+                        index=0): string =
+  ## gets a video preview URL.
+  ##
+  ## Using this URL you can download video preview in the file.
+  result = t.image_preview_url(response, index, "preview.php")
+
+proc video_preview_url*(t: ATraceMoeRef, response: JsonNode,
+                        index=0): Future[string] {.async.} =
+  ## gets a video preview URL.
+  ##
+  ## Using this URL you can download video preview in the file.
+  result = await t.image_preview_url(response, index, "preview.php")
+
+
+proc video_preview_natural*(t: TraceMoeObj, response: JsonNode,
+                            index=0): string =
+  ## Gets natural video preview.
+  ##
+  ## Using this URL you can download natural video preview in the file.
+  var r = response["docs"][index]
+  result = MEDIA_URL & "video/" & $r["anilist_id"] & "/"
+  result &= r["filename"].getStr & "?t=" & $r["at"]
+  result &= "&token=" & r["tokenthumb"].getStr
+
+
 proc search*(t: ATraceMoeRef, file: string,
              search_filter=0, is_url=false): Future[JsonNode] {.async.} =
   ## Searchs anime by image or image URL.
